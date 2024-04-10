@@ -11,8 +11,9 @@
 #ifndef AT_REG_H // Header guard . (if file is not defined then define it)
 #define AT_REG_H
 
+#ifndef F_CPU
 #define F_CPU 16000000UL //Clock Speed
-
+#endif
 /* This file contain addresses of registers that does not belong to any  perepheral (like status register SREG) */
 
 #define SREG    ( ( * ( volatile u8 * ) 0x5F) )//define status register
