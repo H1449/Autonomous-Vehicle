@@ -6,11 +6,9 @@
  */ 
 
 /*LIBRARIES*/
-#define F_CPU 16000000UL
-#include <util/delay.h>
 #include "AT_REG.H"
 #include "main.h"
-
+#include <util/delay.h>
 #include "BIT_MATH.H" //include essential header files (BIT_MATH and STD_TYPES)
 #include "STD_TYPES.H"
 
@@ -49,25 +47,18 @@
 
 int main(void)
 {
-	u8 str[] = "TL3 3ENY!!!";
-	LCD_vInit();
-	
-	LCD_vSend_String(str);
-	//AV_vInit(); 
-	//TMR_TMR1_vInit(TMR_MODE_NORMAL , TMR_PRESCALE_1);
-	//u8 DISTANCES[3] = {} ;
-
-
-
+	AV_vInit(); 
+	TMR_TMR1_vInit(TMR_MODE_NORMAL , TMR_PRESCALE_1);
+	u8 DISTANCES[3] = {} ;
+	u8 Welcome_scrn[] = "Hello";
+	LCD_vSend_String(Welcome_scrn);
     while(1)
-	{
+    {
 		
-    //{
-		
-	/*	while(USS_u8GET_DISTANCE() > AV_MIN_DISTANCE_TO_OBSTICLE_CM)
-		{
-			DCMTR_MOVE_FORWARD();
-		}
+		//while(USS_u8GET_DISTANCE() > AV_MIN_DISTANCE_TO_OBSTICLE_CM)
+		//{
+			//DCMTR_MOVE_FORWARD();
+		//}
 		DCMTR_STOP();
 		SRVO_vSend_PWM_IO_ANGLE_N90();
 		DISTANCES[0] = USS_u8GET_DISTANCE();
@@ -100,14 +91,13 @@ int main(void)
 		}
 	
 		
-    }*/
+    }
 }
-	}
-/*
+
 void AV_vInit()
 {
 	LCD_vInit();
 	USS_vInit();
 	SRVO_vInit();
 	DCMTR_vInit();
-}*/
+}
