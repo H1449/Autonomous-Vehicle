@@ -104,4 +104,8 @@ Description” for detailed information.*/
 #define HIGH_NIPPLE 1
 #define LOW_NIPPLE 0
 
+#define GlobalInterrupt_Enable()  SREG |= (1<<SREG_I_GIE) 
+
+#define GlobalInterrupt_Disable() SREG &= ~(1<<SREG_I_GIE)
+
 #endif
