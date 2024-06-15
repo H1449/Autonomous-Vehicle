@@ -12,13 +12,17 @@
 // Header guard . (if file is not defined then define it)
 #define SRVO_PRIVATE_H
 
+#define SRVO_DIRECTION_ANTICLKWISE 1
+#define SRVO_DIRECTION_CLKWISE 0
+
 /* 1ms     1.5ms      2ms  */
 /*  -90         0           90  */
 /* pulse(x) = 1.5ms (+) [ x * (0.5ms/90) ] , where  -90 < x <  90*/
 
-#define SRVO_HOME_POS_PWM_DS 7.5 
-#define SRVO_RANGE_PWM_DS 2.5
-#define SRVO_ANGLE_STEP_PWM_DS (1/36)
-#define SRVO_MAX_SERVE (SRVO_HOME_POS_PWM_DS + SRVO_RANGE_PWM_DS )
-#define SRVO_MIN_SERVE  (SRVO_HOME_POS_PWM_DS - SRVO_RANGE_PWM_DS )
+#define SRVO_HOME_POS_PWM_DUTY_CYCLE 7.5 
+#define SRVO_RANGE_PWM_DUTY_CYCLE 2.5
+#define SRVO_ANGLE_STEP_PWM_DUTY_CYCLE (1/36)
+#define SRVO_MAX_SERVE 10
+#define SRVO_MIN_SERVE  5
+
 #endif

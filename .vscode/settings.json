@@ -2,6 +2,8 @@
     "files.associations": {
         "*.C": "c",
         "tmr_private.h": "c",
-        "tmr_interface.h": "c"
+        "tmr_interface.h": "c",
+        "std_types.h": "c",
+        "tmr_config.h": "c"
     }
 }
