@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "*.C": "c",
+        "tmr_private.h": "c",
+        "tmr_interface.h": "c"
+    }
+}
