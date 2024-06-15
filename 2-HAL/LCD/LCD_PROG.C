@@ -7,28 +7,20 @@
 //***********************************VERSION: 0.0.1**********************************//
 //*******************************FILE: LCD_PROG.C*******************************//
 //*************************************************************************************/
-/*1. check if lcd is busy
-    2. enable e
-    3. set r/w
-    4. set rs switch for data/command
-    5. send or do whatever
-    6. disable e*/
+
 
 //include essential header files (BIT_MATH and STD_TYPES)
+
+#include "_ATMEGA32_.h"  //this file is written by me to include all essential uncategorized addresses
 #include <util/delay.h>
-//#define F_CPU 16000000UL
-#include "BIT_MATH.H"
-#include "STD_TYPES.H"
-#include "AT_REG.H" //this file is written by me to include all essential uncategorized addresses
+#include "BIT_MATH.h"
+#include "STD_TYPES.h"
 
-//include header files of the driver
-#include "GPIO_CONFIG.H"
-#include "GPIO_INTERFACE.H"
-#include "GPIO_PRIVATE.H"
+#include "GPIO_PRIVATE.h"
 
-#include "LCD_CONFIG.H"
-#include "LCD_PRIVATE.H"
-#include "LCD_INTERFACE.H"
+#include "LCD_CONFIG.h"
+#include "LCD_PRIVATE.h"
+#include "LCD_INTERFACE.h"
 
 
 void LCD_vInit(void) // set all pins of all ports OUTPUT and HIGH
@@ -61,35 +53,28 @@ void LCD_vInit(void) // set all pins of all ports OUTPUT and HIGH
 }
 
 
-void LCD_vSend_Command(u8 Command) // send command to LCD
+void LCD_vSend_Command(u8 Command)
 {
 
-	CLEAR_BIT(LCD_SIG_PORT,LCD_RS); // SET RS  to LOW : LOW for sending command and HIGH for data
+	CLEAR_BIT(LCD_SIG_PORT,LCD_RS); 
 	_delay_ms(2);
-	CLEAR_BIT(LCD_SIG_PORT,LCD_RW);   // SET RW  to HIGH:  HIGH for READ and LOW for WRITE
+	CLEAR_BIT(LCD_SIG_PORT,LCD_RW);  
 	_delay_ms(2);
 
-	LCD_DATA_PORT &= 0x0F ; //getting port ready //having data space cleared for rfeceiving new data
-	LCD_DATA_PORT |= Command & 0xF0 ; // sending high nipple
+	LCD_DATA_PORT &= 0x0F ; 
+	LCD_DATA_PORT |= (Command & 0xF0) ;
 
-	//enabling E bit for sending data
-	SET_BIT(LCD_SIG_PORT,LCD_E);   // SET E  to HIGH
+	SET_BIT(LCD_SIG_PORT,LCD_E); 
 	_delay_ms(2);
-	CLEAR_BIT(LCD_SIG_PORT,LCD_E);   // SET E  to LOW
+	CLEAR_BIT(LCD_SIG_PORT,LCD_E); 
 	_delay_ms(2);
-	//high nipple sent by now
 
+	LCD_DATA_PORT &= 0x0F ; 
+	LCD_DATA_PORT |= (Command <<4); 
 
-	//to send low nipple
-	LCD_DATA_PORT &= 0x0F ; //getting port ready //having data space cleared for rfeceiving new data
-	LCD_DATA_PORT |= Command <<4; // sending low nipple
-
-	//enabling E bit for sending data
-	SET_BIT(LCD_SIG_PORT,LCD_E);   // SET E  to HIGH
+	SET_BIT(LCD_SIG_PORT,LCD_E);  
 	_delay_ms(2);
-	//disabling E bit for sending data
-	//LCD_DATA_PORT &= 0X0F ;
-	CLEAR_BIT(LCD_SIG_PORT,LCD_E);   // SET E  to LOW
+	CLEAR_BIT(LCD_SIG_PORT,LCD_E);  
 	_delay_ms(2);
 }
 
@@ -97,43 +82,36 @@ void LCD_vSend_Command(u8 Command) // send command to LCD
 void LCD_vSend_Data(u8 Data)
 {
 
-        //RS is set to HIGH and  R/W is set to LOW to send DATA
-        SET_BIT(LCD_SIG_PORT,LCD_RS); // SET RS  to LOW : LOW for sending command and HIGH for data
-        _delay_ms(2); 
-        CLEAR_BIT(LCD_SIG_PORT,LCD_RW);   // SET RW  to HIGH:  HIGH for READ and LOW for WRITE
-         _delay_ms(2); 
+	SET_BIT(LCD_SIG_PORT,LCD_RS); 
+	_delay_ms(2); 
+	CLEAR_BIT(LCD_SIG_PORT,LCD_RW);
+	_delay_ms(2); 
 
-    //send command bit by bit 
-    // to send high nipple
-            LCD_DATA_PORT &= 0x0F ; //getting port ready //having data space cleared for rfeceiving new data
-            LCD_DATA_PORT |= Data & 0xF0 ; // sending high nipple
+	LCD_DATA_PORT &= 0x0F ; 
+	LCD_DATA_PORT |= (Data & 0xF0) ; 
 
-        //enabling E bit for sending data   
-        SET_BIT(LCD_SIG_PORT,LCD_E);   // SET E  to HIGH
-        _delay_ms(2); 
-        CLEAR_BIT(LCD_SIG_PORT,LCD_E);   // SET E  to LOW
-        _delay_ms(2); 
+	SET_BIT(LCD_SIG_PORT,LCD_E);
+	_delay_ms(2); 
+	CLEAR_BIT(LCD_SIG_PORT,LCD_E);
+	_delay_ms(2); 
 
-        //to send low nipple
-        LCD_DATA_PORT &= 0x0F ; //getting port ready //having data space cleared for rfeceiving new data
-           LCD_DATA_PORT |= Data <<4;  // sending low nipple
-     
-        //enabling E bit for sending data
-    SET_BIT(LCD_SIG_PORT,LCD_E);   // SET E  to HIGH
+	LCD_DATA_PORT &= 0x0F; 
+	LCD_DATA_PORT |= Data <<4;
+
+    SET_BIT(LCD_SIG_PORT,LCD_E); 
     _delay_ms(2); 
-    CLEAR_BIT(LCD_SIG_PORT,LCD_E);   // SET E  to LOW
+    CLEAR_BIT(LCD_SIG_PORT,LCD_E); 
     _delay_ms(2); 
 
 }
 
 void LCD_vSend_String(u8* String)
 {
-  u8 index=0;
+
     while ( (*String) != '\0')
     {
-        LCD_vSend_Data(String);
+        LCD_vSend_Data(*String);
         String++;
     }
-    
-    
+
 }

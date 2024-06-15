@@ -12,7 +12,6 @@
 // Header guard . (if file is not defined then define it)
 #define LCD_PRIVATE_H
 
-//busy flag (BF) is read when Register select (RS) is low and read write select register (R/W) is HIGH (read mode) through DB7
 #define LCD_DB0 0
 #define LCD_DB1 1
 #define LCD_DB2 2
