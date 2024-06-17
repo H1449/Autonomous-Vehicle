@@ -154,7 +154,7 @@ u8 TMR1_u8GET_CTCA_INTERRUPT_FLAG(void);
 
 void TMR1_vCLEAR_CTCA_INTERRUPT_FLAG(void);
 
-void TMR1_vSET_CTCA_CALLBACK( void *(pFunction) ( void ) )ك
+void TMR1_vSET_CTCA_CALLBACK( void *(pFunction) ( void ) );
 
 void __vector_7(void) __attribute__( ( signal ) );
 
@@ -203,6 +203,8 @@ void TMR1_vFORCE_OUTPUT_COMPARE_B(void);
 void TMR1_vENABLE_ICR_INTERRUPT(void);
 
 void TMR1_vDISABLE_ICR_INTERRUPT(void);
+
+void  TMR1_PWM_vSET_ICR_VALUE(u16 ICR_value);
 
 u16  TMR1_u16GET_ICR_VALUE(void);
 
@@ -260,8 +262,6 @@ u8 TMR2_u8GET_OUTPUT_COMPARE_INTERRUPT_FLAG(void);
 void TMR2_vCLEAR_OUTPUT_COMPARE_INTERRUPT_FLAG(void);
 
 u32 TMR2_u32GET_CTC_FREQUENCY(void);
-
-u8 TMR2_CTC_u8SET_FREQUENCY(void);
 
 u8 TMR2_CTC_u8SET_FREQUENCY(u32 Target_Frequency);
 

@@ -871,7 +871,8 @@ void TMR1_vFORCE_OUTPUT_COMPARE_A(void)
 /*OCR1B*/
 void TMR1_vASSIGN_CTCB_VALUE(u16 OCRB_VALUE)
 {
-    TMR_OCR1BH = ( OCRB_VALUE && 0xFF00);
+    u8 temp = ( OCRB_VALUE && 0xFF00);
+    TMR_OCR1BH = temp;
     TMR_OCR1BL =  (OCRB_VALUE && 0x00FF) ;
 }
 
@@ -966,6 +967,13 @@ void TMR1_vENABLE_ICR_INTERRUPT(void)
 void TMR1_vDISABLE_ICR_INTERRUPT(void)
 {
     CLEAR_BIT(TMR_TIMSK, TMR_TIMSK_TICIE1);
+}
+
+void  TMR1_PWM_vSET_ICR_VALUE(u16 ICR_value)
+{
+    u8 temp = ( ICR_value && 0xFF00);
+    TMR_OCR1BH = temp;
+    TMR_OCR1BL =  (ICR_value && 0x00FF) ;
 }
 
 u16  TMR1_u16GET_ICR_VALUE(void)

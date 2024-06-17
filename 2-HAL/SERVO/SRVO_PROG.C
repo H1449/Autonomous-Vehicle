@@ -28,7 +28,7 @@ void SRVO_vInit(void)
     #endif
     if (TMR1_MODE == TMR_MODE_PWM_INPUT_CAPTURE && TMR1_PRESCALE >=8)
     {
-        TMR_ICR1 = (u16)  ( (F_CPU/(50*TMR1_PRESCALE) )-1 )
+        TMR_ICR1 = (u16)  ( (F_CPU/(50*TMR1_PRESCALE) )-1 );
     }
 }
 
@@ -36,7 +36,7 @@ void SRVO_SWEEP( s16 angle , u8 Angular_Speed )
 {
     const u8 SRVO_DELAY_DEG_PER_ms = (u8) (SRVO_NORMAL_DELAY_ms*2/Angular_Speed);
     static u16 pwm = (u16) (SRVO_HOME_POS_PWM_DUTY_CYCLE);
-    (if angle>=0 && angle <=90)
+    if( angle>=0 && angle <=90)
     {
         for ( ; pwm <= SRVO_CONVERT_ANGLE_TO_DUTY_CYCLE(angle);
                   pwm+= SRVO_ANGLE_STEP_PWM_DUTY_CYCLE )
@@ -50,7 +50,7 @@ void SRVO_SWEEP( s16 angle , u8 Angular_Speed )
         }
     }
    else
-        (if angle>=-90 && angle <0)
+        if( angle>=-90 && angle <0)
         {
             for ( ; pwm > SRVO_CONVERT_ANGLE_TO_DUTY_CYCLE(angle);
                      pwm-= SRVO_ANGLE_STEP_PWM_DUTY_CYCLE )
@@ -60,7 +60,7 @@ void SRVO_SWEEP( s16 angle , u8 Angular_Speed )
                 #else
                 TMR1_vASSIGN_CTCB_VALUE((pwm* TMR_ICR1));
                 #endif
-                _delay_ms( SRVO_delay );
+                _delay_ms( SRVO_DELAY_DEG_PER_ms );
             }
         }
 
