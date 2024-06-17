@@ -8,78 +8,72 @@
 //*******************************FILE: SRVO_PROG.C*******************************//
 //*************************************************************************************/
 
-//include essential header files (BIT_MATH and STD_TYPES)
-
-#include "BIT_MATH.H"
-#include "STD_TYPES.H"
+#include "BIT_MATH.h"
+#include "STD_TYPES.h"
 #include "_ATMEGA32_.h"  //this file is written by me to include all essential uncategorized addresses
 #include <util/delay.h>
 
-//include header files of the driver
-#include "TMR_CONFIG.H"
-#include "TMR_PRIVATE.H"
-#include "TMR_INTERFACE.H"
-#include "SRVO_CONFIG.H"
-#include "SRVO_PRIVATE.H"
-#include "SRVO_INTERFACE.H"
+#include "TMR_PRIVATE.h"
+#include "TMR_INTERFACE.h"
+#include "SRVO_CONFIG.h"
+#include "SRVO_PRIVATE.h"
+#include "SRVO_INTERFACE.h"
 
-void SRVO_vInit(u8 SRVO_PIN)
+void SRVO_vInit(void)
 {
-    GlobalInterrupt_Enable();
-    switch (SRVO_PIN)
+    #if SRVO_PIN == SRVO_PIN_PD5
+        SET_BIT(TMR_OC1_DDR, TMR_OC1A_PIN);
+    #else
+        SET_BIT(TMR_OC_DDR, TMR_OC2A_PIN);
+    #endif
+    if (TMR1_MODE == TMR_MODE_PWM_INPUT_CAPTURE && TMR1_PRESCALE >=8)
     {
-        case SRVO_PIN_PB3:
-            TMR0_vInit(TMR_MODE_FAST_PWM, TMR_PRESCALE_1024);
-            TMR0_PWM_vASSIGN_INVERSION(TRUE);
-            TMR0_vENABLE_CTC_INTERRUPT();
-        break;
-
-        case SRVO_PIN_PD7:
-            TMR2_vInit(TMR_MODE_FAST_PWM, TMR_PRESCALE_1024);
-            TMR2_PWM_vASSIGN_INVERSION(TRUE);
-            TMR2_vENABLE_CTC_INTERRUPT();
-        break;
-
-        case SRVO_PIN_PD5:
-            TMR1_vInit(TMR_MODE_FAST_PWM, TMR_PRESCALE_1024);
-            TMR1_PWM_vASSIGN_INVERSION(TRUE);
-            TMR1_vENABLE_CTCA_INTERRUPT();
-        break;
-
-        case SRVO_PIN_PD4:
-            TMR1_vInit(TMR_MODE_FAST_PWM, TMR_PRESCALE_1024);
-            TMR1_PWM_vASSIGN_INVERSION(TRUE);
-            TMR1_vENABLE_CTCB_INTERRUPT();
-        break;
-
-    }
-
-
-}
-
-void SRVO_SWEEP( u8 angle, u8 Direction , u8 Angular_Speed )
-{
-    const u8 SRVO_delay = (u8) (Angular_Speed* SRVO_HOME_POS_PWM_DUTY_CYCLE);
-    switch (Direction)
-    {
-    case SRVO_DIRECTION_ANTICLKWISE:
-    for (f16 pwm= SRVO_HOME_POS_PWM_DUTY_CYCLE ;  
-    pwm < SRVO_MAX_SERVE ; pwm+= SRVO_ANGLE_STEP_PWM_DUTY_CYCLE)
-    {
-        TMR_TMR0_PWM_SET_DUTY_CYCLE(pwm);
-        _delay_ms( SRVO_delay );
-    }
-    break;
-        case SRVO_DIRECTION_CLKWISE:
-    for (f16 pwm= SRVO_HOME_POS_PWM_DUTY_CYCLE ; 
-    pwm < SRVO_MAX_SERVE ; pwm+= SRVO_ANGLE_STEP_PWM_DUTY_CYCLE)
-    {
-        TMR_TMR0_PWM_SET_DUTY_CYCLE(pwm);
-        _delay_ms( SRVO_delay );
-    }
-    break;
-
+        TMR_ICR1 = (u16)  ( (F_CPU/(50*TMR1_PRESCALE) )-1 )
     }
 }
 
+void SRVO_SWEEP( s16 angle , u8 Angular_Speed )
+{
+    const u8 SRVO_DELAY_DEG_PER_ms = (u8) (SRVO_NORMAL_DELAY_ms*2/Angular_Speed);
+    static u16 pwm = (u16) (SRVO_HOME_POS_PWM_DUTY_CYCLE);
+    (if angle>=0 && angle <=90)
+    {
+        for ( ; pwm <= SRVO_CONVERT_ANGLE_TO_DUTY_CYCLE(angle);
+                  pwm+= SRVO_ANGLE_STEP_PWM_DUTY_CYCLE )
+        {
+        #if SRVO_PIN == SRVO_PIN_PD5
+        TMR1_vASSIGN_CTCA_VALUE((pwm* TMR_ICR1));
+        #else
+        TMR1_vASSIGN_CTCB_VALUE((pwm* TMR_ICR1));
+        #endif
+            _delay_ms( SRVO_DELAY_DEG_PER_ms );
+        }
+    }
+   else
+        (if angle>=-90 && angle <0)
+        {
+            for ( ; pwm > SRVO_CONVERT_ANGLE_TO_DUTY_CYCLE(angle);
+                     pwm-= SRVO_ANGLE_STEP_PWM_DUTY_CYCLE )
+            {
+                #if SRVO_PIN == SRVO_PIN_PD5
+                TMR1_vASSIGN_CTCA_VALUE((pwm* TMR_ICR1));
+                #else
+                TMR1_vASSIGN_CTCB_VALUE((pwm* TMR_ICR1));
+                #endif
+                _delay_ms( SRVO_delay );
+            }
+        }
 
+}
+
+/* 1ms     1.5ms      2ms  
+  -90         0             90  
+   5%       7.5%      10%*/
+/* pulse(x) = 1.5ms (+) [ x * (0.5ms/90) ] , where  -90 < x <  90*/
+/*Servo needs PWM 50Hz (20ms) signal with duty cycle of 
+~7.5% (1.5ms on time)  at 0*  
+ 5%  (1ms on time)     at -90* and
+  10% (2ms on time)  at +90* 
+ **/
+
+/*END*/

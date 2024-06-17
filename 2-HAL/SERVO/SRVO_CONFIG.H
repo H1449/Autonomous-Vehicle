@@ -9,12 +9,8 @@
 //************************************************************************************/
 
 #ifndef SRVO_CONFIG_H 
-// Header guard . (if file is not defined then define it)
 #define SRVO_CONFIG_H
 
-#define SRVO_SWEEP_TYPE SRVO_SWEEP_TYPE_180
-
-#define SRVO_PIN   
-
+#define SRVO_PIN   SRVO_PIN_PD5
 
 #endif
