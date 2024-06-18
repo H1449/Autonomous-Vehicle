@@ -211,7 +211,7 @@ u8 TMR0_u8GET_OVF_INTERRUPT_FLAG(void)
      return GET_BIT( TMR_TIFR , TMR_TIFR_TOV0 ) ;
 }
 
-void TMR0_CALLBACK_OVERFLOW_vSET_CALLBACK( void *(pFunction) ( void ) )
+void TMR0_vSET_OVF_CALLBACK( void (*pFunction) ( void ) )
 {
     if (pFunction != NULL)
     {/*TMR0 CALLBACK OVERFLOW*/
@@ -295,7 +295,7 @@ u8 TMR0_CTC_u8SET_FREQUENCY(u32 Target_Frequency)
 
 }
 
-void TMR0_vSET_CTC_CALLBACK( void *(pFunction) ( void ) )
+void TMR0_vSET_CTC_CALLBACK( void (*pFunction) ( void ) )
 {
     if (pFunction != NULL)
     {
@@ -318,11 +318,6 @@ void __vector_10(void)
 void TMR0_vENABLE_OC0_OF_OUTPUT_COMPARE(void)
 {
 SET_BIT(TMR_OC0_DDR,TMR_OC0_PIN);
-}
-
-void TMR0_vDISABLE_OC0_OF_OUTPUT_COMPARE(void)
-{
-CLEAR_BIT(TMR_OC0_DDR,TMR_OC0_PIN);
 }
 
 void TMR0_vDISCONNECT_OC0_ON_OUTPUT_COMPARE(void)
@@ -403,9 +398,6 @@ u32 TMR0_u32GET_PWM_FREQUENCY(void)
 /*GENERAL*/
 void TMR1_vInit( u8 MODE, u8 PRESCALER)
 {
-
-TMR_TCNT1H=0;
-TMR_TCNT1L=0;
 switch (MODE)
 {
 case TMR_MODE_NORMAL:
@@ -515,7 +507,7 @@ case TMR_MODE_NORMAL:
     break;
 }
  
-    switch (PRESCALER)
+ switch (PRESCALER)
     {
     case TMR_PRESCALE_1:
         SET_BIT( TMR_TCCR1B , TMR_TCCR1B_CS10 );
@@ -562,14 +554,13 @@ case TMR_MODE_NORMAL:
 
     }
 
-
 }
 
 void TMR1_vDeInit(void)
 {
-    CLEAR_BIT( TMR_TCCR2 , TMR_TCCR2_CS20 );
-    CLEAR_BIT( TMR_TCCR2 , TMR_TCCR2_CS21 );
-    CLEAR_BIT( TMR_TCCR2 , TMR_TCCR2_CS22 );
+    CLEAR_BIT( TMR_TCCR1B , TMR_TCCR1B_CS10 );
+    CLEAR_BIT( TMR_TCCR1B , TMR_TCCR1B_CS11 );
+    CLEAR_BIT( TMR_TCCR1B , TMR_TCCR1B_CS12 );
 }
 
 void TMR1_vSet_Prescaler(u8 PRESCALER)
@@ -811,7 +802,7 @@ void TMR1_vCLEAR_CTCA_INTERRUPT_FLAG(void)
     SET_BIT(TMR_TIFR, TMR_TIFR_OCF1A);
 }
 
-void TMR1_vSET_CTCA_CALLBACK( void *(pFunction) ( void ) )
+void TMR1_vSET_CTCA_CALLBACK( void (*pFunction) ( void ) )
 {
     if (pFunction != NULL)
     {
@@ -902,7 +893,7 @@ void TMR1_vCLEAR_CTCB_INTERRUPT_FLAG(void)
     SET_BIT(TMR_TIFR, TMR_TIFR_OCF1B);
 }
 
-void TMR1_vSET_CTCB_CALLBACK( void *(pFunction) ( void ) )
+void TMR1_vSET_CTCB_CALLBACK( void (*pFunction) ( void ))
 {
     if (pFunction != NULL)
     {
@@ -1016,7 +1007,7 @@ void TMR1_CLEAR_ICR_INTERRUPT_FLAG(void)
     SET_BIT(TMR_TIFR, TMR_TIFR_ICF1);
 }
 
-void TMR1_vSET_ICR_CALLBACK( void *(pFunction) ( void ) )
+void TMR1_vSET_ICR_CALLBACK( void (*pFunction) ( void ) )
 {
     if (pFunction != NULL)
     {
@@ -1024,7 +1015,7 @@ void TMR1_vSET_ICR_CALLBACK( void *(pFunction) ( void ) )
     }
 }
 
-void __vector_7 (void)
+void __vector_6 (void)
 {
     TMR1_ICR_COUNTER++;
     if (TMR_CALLBACK_INPUT_CAPTURE_PTR1 != NULL)
@@ -1208,7 +1199,7 @@ u8 TMR2_u8GET_COUNTER_VALUE(void)
         return TMR_TCNT2;
 }
 
- void TMR01_vReset_Prescaler(void)
+ void TMR2_vReset_Prescaler(void)
 {
     SET_BIT(TMR_SFIOR, TMR_SFIOR_PSR2);
 }
@@ -1229,7 +1220,7 @@ u8 TMR2_u8GET_OVF_INTERRUPT_FLAG(void)
     return GET_BIT( TMR_TIFR , TMR_TIFR_TOV2 ) ;
 }
 
-void TMR2_vSET_OVF_CALLBACK( void *(pFunction) ( void ) )
+void TMR2_vSET_OVF_CALLBACK( void (*pFunction) ( void ) )
 {
     if (pFunction != NULL)
     {
@@ -1312,7 +1303,7 @@ u8 TMR2_CTC_u8SET_FREQUENCY(u32 Target_Frequency)
 
 }
 
-void TMR2_vSET_CTC_CALLBACK( void *(pFunction) ( void ) )
+void TMR2_vSET_CTC_CALLBACK( void (*pFunction) ( void ) )
 {
     if (pFunction != NULL)
     {
@@ -1332,30 +1323,30 @@ void __vector_4(void)
 }
 
 /*NON-PWM*/
-void TMR0_ENABLE_Pd7_OF_OUTPUT_COMPARE(void)
+void TMR2_vENABLE_OC2_OF_OUTPUT_COMPARE(void)
 {
 SET_BIT(TMR_OC2_DDR,TMR_OC2_PIN);
 }
 
-void TMR0_DISCONNECT_PD7_ON_OUTPUT_COMPARE(void)
+void TMR2_vDISCONNECT_OC2_ON_OUTPUT_COMPARE(void)
 {
      CLEAR_BIT( TMR_TCCR2 , TMR_TCCR2_COM20 ) ;
      CLEAR_BIT( TMR_TCCR2 , TMR_TCCR2_COM21 ) ;
 }
 
-void TMR0_vSET_PD7_ON_OUTPUT_COMPARE(void)
+void TMR2_vSET_OC2_ON_OUTPUT_COMPARE(void)
 {
      SET_BIT( TMR_TCCR2 , TMR_TCCR2_COM20 ) ;
      SET_BIT( TMR_TCCR2 , TMR_TCCR2_COM21 ) ;
 }
 
-void TMR2_CLEAR_PD7_ON_OUTPUT_COMPARE(void)
+void TMR2_vCLEAR_OC2_ON_OUTPUT_COMPARE(void)
 {
     CLEAR_BIT( TMR_TCCR2 , TMR_TCCR2_COM20 ) ;
     SET_BIT( TMR_TCCR2 , TMR_TCCR2_COM21 ) ;
 }
 
-void TMR2_TOGGLE_PD7_ON_OUTPUT_COMPARE(void)
+void TMR2_vTOGGLE_OC2_ON_OUTPUT_COMPARE(void)
 {
      SET_BIT(      TMR_TCCR2 , TMR_TCCR2_COM20 ) ;
      CLEAR_BIT( TMR_TCCR2 , TMR_TCCR2_COM21 ) ;

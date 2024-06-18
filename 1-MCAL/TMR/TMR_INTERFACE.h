@@ -48,7 +48,7 @@ void TMR0_vDISABLE_OVF_INTERRUPT(void);
 
 u8 TMR0_u8GET_OVF_INTERRUPT_FLAG(void);
 
-void TMR0_vSET_OVF_CALLBACK( void *(pFunction) ( void ) );
+void TMR0_vSET_OVF_CALLBACK( void (*pFunction) ( void ) );
 
 void __vector_11(void) __attribute__( ( signal ) );
 
@@ -67,31 +67,27 @@ void TMR0_vCLEAR_OUTPUT_COMPARE_INTERRUPT_FLAG(void);
 
 u32 TMR0_u32GET_CTC_FREQUENCY(void);
 
-u8 TMR0_CTC_u8SET_FREQUENCY(void);
-
 u8 TMR0_CTC_u8SET_FREQUENCY(u32 Target_Frequency);
 
-void TMR0_vSET_CTC_CALLBACK( void *(pFunction) ( void ) ); /*Interrupt finction of tmr0 on compare match*/
+void TMR0_vSET_CTC_CALLBACK( void (*pFunction) ( void ) );
 
 void __vector_10(void) __attribute__( ( signal ) );
 
 /*NON-PWM*/
-void TMR0_vENABLE_PB3_OF_OUTPUT_COMPARE(void);
+void TMR0_vENABLE_OC0_OF_OUTPUT_COMPARE(void);
 
-void TMR0_vDISABLE_PB3_OF_OUTPUT_COMPARE(void);
+void TMR0_vDISCONNECT_OC0_ON_OUTPUT_COMPARE(void);
 
-void TMR0_vDISCONNECT_PB3_ON_OUTPUT_COMPARE(void);
+void TMR0_vSET_OC0_ON_OUTPUT_COMPARE(void);
 
-void TMR0_vSET_PB3_ON_OUTPUT_COMPARE(void);
+void TMR0_vCLEAR_OC0_ON_OUTPUT_COMPARE(void);
 
-void TMR0_vCLEAR_PB3_ON_OUTPUT_COMPARE(void);
-
-void TMR0_vTOGGLE_PB3_ON_OUTPUT_COMPARE(void);
+void TMR0_vTOGGLE_OC0_ON_OUTPUT_COMPARE(void);
 
 void TMR0_vFORCE_OUTPUT_COMPARE(void);
 
 /*PWM*/
-void TMR0_PWM_SET_DUTY_CYCLE_VALUE(u8 duty_cycle);
+void TMR0_PWM_vSET_DUTY_CYCLE_VALUE(u8 duty_cycle);
 
 void TMR0_PWM_vASSIGN_INVERSION(u8 is_inverted);
 
@@ -154,7 +150,7 @@ u8 TMR1_u8GET_CTCA_INTERRUPT_FLAG(void);
 
 void TMR1_vCLEAR_CTCA_INTERRUPT_FLAG(void);
 
-void TMR1_vSET_CTCA_CALLBACK( void *(pFunction) ( void ) );
+void TMR1_vSET_CTCA_CALLBACK( void (*pFunction) ( void ) );
 
 void __vector_7(void) __attribute__( ( signal ) );
 
@@ -183,7 +179,7 @@ u8 TMR1_u8GET_CTCB_INTERRUPT_FLAG(void);
 
 void TMR1_vCLEAR_CTCB_INTERRUPT_FLAG(void);
 
-void TMR1_vSET_CTCB_CALLBACK( void *(pFunction) ( void ));
+void TMR1_vSET_CTCB_CALLBACK( void (*pFunction) ( void ));
 
 void __vector_8(void) __attribute__( ( signal ) );
 
@@ -218,9 +214,9 @@ u8 TMR1_u8GET_ICR_INTERRUPT_FLAG(void);
 
 void TMR1_CLEAR_ICR_INTERRUPT_FLAG(void);
 
-void TMR1_vSET_ICR_CALLBACK( void *(pFunction) ( void ) );
+void TMR1_vSET_ICR_CALLBACK( void (*pFunction) ( void ) );
 
-void __vector_7(void) __attribute__( ( signal ) );
+void __vector_6(void) __attribute__( ( signal ) );
 
 #endif
 
@@ -237,6 +233,8 @@ void TMR2_vSet_Mode(u8 mode);
 
 u8 TMR2_u8GET_COUNTER_VALUE(void); 
 
+void TMR2_vReset_Prescaler(void);
+
 /*NORMAL MODE*/
 void TMR2_vENABLE_OVF_INTERRUPT(void);
 
@@ -244,7 +242,7 @@ void TMR2_vDISABLE_OVF_INTERRUPT(void);
 
 u8 TMR2_u8GET_OVF_INTERRUPT_FLAG(void);
 
-void TMR2_vSET_OVF_CALLBACK( void *(pFunction) ( void ) );
+void TMR2_vSET_OVF_CALLBACK( void (*pFunction) ( void ) );
 
 void __vector_5(void) __attribute__( ( signal ) );
 
@@ -265,22 +263,20 @@ u32 TMR2_u32GET_CTC_FREQUENCY(void);
 
 u8 TMR2_CTC_u8SET_FREQUENCY(u32 Target_Frequency);
 
-void TMR2_vSET_CTC_CALLBACK( void *(pFunction) ( void ) ); /*Interrupt finction of tmr0 on compare match*/
+void TMR2_vSET_CTC_CALLBACK( void (*pFunction) ( void ) ); /*Interrupt finction of tmr0 on compare match*/
 
 void __vector_4(void) __attribute__( ( signal ) );
 
 /*NON-PWM*/
-void TMR2_vENABLE_PB3_OF_OUTPUT_COMPARE(void);
+void TMR2_vENABLE_OC2_OF_OUTPUT_COMPARE(void);
 
-void TMR2_vDISABLE_PB3_OF_OUTPUT_COMPARE(void);
+void TMR2_vDISCONNECT_OC2_ON_OUTPUT_COMPARE(void);
 
-void TMR2_vDISCONNECT_PB3_ON_OUTPUT_COMPARE(void);
+void TMR2_vSET_OC2_ON_OUTPUT_COMPARE(void);
 
-void TMR2_vSET_PB3_ON_OUTPUT_COMPARE(void);
+void TMR2_vCLEAR_OC2_ON_OUTPUT_COMPARE(void);
 
-void TMR2_vCLEAR_PB3_ON_OUTPUT_COMPARE(void);
-
-void TMR2_vTOGGLE_PB3_ON_OUTPUT_COMPARE(void);
+void TMR2_vTOGGLE_OC2_ON_OUTPUT_COMPARE(void);
 
 void TMR2_vFORCE_OUTPUT_COMPARE(void);
 
@@ -294,7 +290,7 @@ u32 TMR2_u32GET_PWM_FREQUENCY(void);
 
 #endif
 
-#if (TMR_ENABLE_TMR0 == TRUE) && (TMR_ENABLE_TMR1 == TRUE)
+#if TMR_ENABLE_TMR0 == TRUE && TMR_ENABLE_TMR1 == TRUE
     void TMR01_vReset_Prescaler(void);
 #endif
 

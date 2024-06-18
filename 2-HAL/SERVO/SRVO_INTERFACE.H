@@ -14,7 +14,7 @@
 #define SRVO_PIN_PD5    1
 #define SRVO_PIN_PD4    2
 
-void SRVO_vInit(void); // initialize SERVO
+u8 SRVO_vInit(void); // initialize SERVO
 
 void SRVO_SWEEP( s16 angle , u8 Angular_Speed);
 

@@ -13,28 +13,35 @@
 #include "_ATMEGA32_.h"  //this file is written by me to include all essential uncategorized addresses
 #include <util/delay.h>
 
+#include "TMR_CONFIG.h"
 #include "TMR_PRIVATE.h"
 #include "TMR_INTERFACE.h"
 #include "SRVO_CONFIG.h"
 #include "SRVO_PRIVATE.h"
 #include "SRVO_INTERFACE.h"
 
-void SRVO_vInit(void)
+u8 SRVO_vInit(void)
 {
+    u8 state = ERROR;
     #if SRVO_PIN == SRVO_PIN_PD5
         SET_BIT(TMR_OC1_DDR, TMR_OC1A_PIN);
     #else
-        SET_BIT(TMR_OC_DDR, TMR_OC2A_PIN);
+        SET_BIT(TMR_OC1_DDR, TMR_OC2A_PIN);
     #endif
     if (TMR1_MODE == TMR_MODE_PWM_INPUT_CAPTURE && TMR1_PRESCALE >=8)
     {
-        TMR_ICR1 = (u16)  ( (F_CPU/(50*TMR1_PRESCALE) )-1 );
+        state = SUCCESS;
+        u16 temp16 = (u16)  ( (F_CPU/(50*TMR1_PRESCALE) )-1 );
+        u8 temp = (temp16 && 0xFF00 );
+        TMR_ICR1H = temp;
+        TMR_ICR1L= (temp16 && 0x00FF);
     }
+    return state;
 }
 
 void SRVO_SWEEP( s16 angle , u8 Angular_Speed )
 {
-    const u8 SRVO_DELAY_DEG_PER_ms = (u8) (SRVO_NORMAL_DELAY_ms*2/Angular_Speed);
+    #define SRVO_DELAY_DEG_PER_ms (u8) (SRVO_NORMAL_DELAY_ms*2/Angular_Speed);
     static u16 pwm = (u16) (SRVO_HOME_POS_PWM_DUTY_CYCLE);
     if( angle>=0 && angle <=90)
     {

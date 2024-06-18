@@ -8,9 +8,7 @@
 ********************************FILE: TMR_CONFIG.C***********************************
 *****************************************************************************************/
 
-
 #ifndef TMR_CONFIG_H 
-// Header guard . (if file is not defined then define it)
 #define TMR_CONFIG_H
 
 /*Enable the desired timer */
@@ -19,11 +17,5 @@
 #define TMR_ENABLE_TMR1 TRUE
 
 #define TMR_ENABLE_TMR2 TRUE
-
-
-
-
-
-
 
 #endif
