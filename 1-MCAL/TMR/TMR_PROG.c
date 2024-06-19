@@ -729,7 +729,7 @@ case TMR_MODE_NORMAL:
 u16 TMR1_u8GET_COUNTER_VALUE(void)
 {
     u8 temp = TMR_TCNT1L;
-    return ( (TMR_TCNT1H<<8) + TMR_TCNT1L );
+    return ( (TMR_TCNT1H<<8) + temp );
 }
 
 void TMR1_vENABLE_OVF_INTERRUPT(void)
@@ -752,7 +752,7 @@ void TMR1_vCLEAR_OVF_INTERRUPT_FLAG(void)
     SET_BIT(TMR_TIFR, TMR_TIFR_TOV1);
 }
 
-void TMR1_vSET_OVF_CALLBACK( void *(pFunction) ( void ) )
+void TMR1_vSET_OVF_CALLBACK( void (*pFunction) ( void ) )
 {
         if (pFunction != NULL)
     {
@@ -772,7 +772,8 @@ void __vector_9 (void)
 /*OCR1A*/   
 void TMR1_vASSIGN_CTCA_VALUE(u16 OCRA_VALUE)
 {
-    TMR_OCR1AH = ( OCRA_VALUE && 0xFF00);
+      u8 temp = ( OCRA_VALUE && 0xFF00);
+        TMR_OCR1AH = temp;
     TMR_OCR1AL =  (OCRA_VALUE && 0x00FF) ;
 }
 

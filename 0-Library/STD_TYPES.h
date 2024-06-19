@@ -9,10 +9,8 @@
 //*************************************************************************************/
 
 #ifndef STD_TYPES_H // Header guard . (if file is not defined then define it)
+
 #define STD_TYPES_H
-//this file contain stand C datatypes presented in number of bits used and sign excistance e.g (u8: unisigned 8bit datatype, s16: signed 16 bit datatype) 
-// such method is adopted to better optimize space taken by variables
-//define datatypes 
 typedef unsigned char u8;
 typedef signed char S8;
 typedef unsigned short u16;

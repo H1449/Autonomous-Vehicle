@@ -31,43 +31,82 @@ u8 SRVO_vInit(void)
     if (TMR1_MODE == TMR_MODE_PWM_INPUT_CAPTURE && TMR1_PRESCALE >=8)
     {
         state = SUCCESS;
-        u16 temp16 = (u16)  ( (F_CPU/(50*TMR1_PRESCALE) )-1 );
-        u8 temp = (temp16 && 0xFF00 );
+
+        u16 temp16 = 0; 
+        switch (TMR1_PRESCALE)
+        {
+            case  8:  temp16 =  (u16)  ( (F_CPU/(400) )-1 );break;
+
+            case  64:  temp16 =  (u16)  ( (F_CPU/(3200) )-1 );break;
+
+            case  256:  temp16 =  (u16)  ( (F_CPU/(12800) )-1 );break;
+
+            case  1024:  temp16 =  (u16)  ( (F_CPU/(51200) )-1 );break;
+        }
+        
+        u8 temp =(u8) (temp16 >>8 );
         TMR_ICR1H = temp;
-        TMR_ICR1L= (temp16 && 0x00FF);
+        TMR_ICR1L= (u8) (temp16 && 0x00FF);
     }
     return state;
 }
-
-void SRVO_SWEEP( s16 angle , u8 Angular_Speed )
+void SRVO_SWEEP(s16 angle)
 {
-    #define SRVO_DELAY_DEG_PER_ms (u8) (SRVO_NORMAL_DELAY_ms*2/Angular_Speed);
-    static u16 pwm = (u16) (SRVO_HOME_POS_PWM_DUTY_CYCLE);
+        static f32 pwm =0;
+            if( angle>=0 && angle <=90)
+    {
+        TMR1_vSET_OC1A_ON_OUTPUT_COMPARE();
+        TMR_OCR1AL = 10;
+        for ( pwm = 7.5; pwm <= 10; pwm+= 0.1)
+        {
+
+         _delay_ms( 10 );
+        }
+    }
+}
+void SRVO_SWEEP2( s16 angle )
+{ //, const u8 Angular_Speed 
+   // #define SRVO_DELAY_DEG_PER_ms (u8) (SRVO_NORMAL_DELAY_ms*2/Angular_Speed);
+   // #define SRVO_DELAY_ms (u8) (angle/Angular_Speed);
+
+    static f32 pwm =0;
     if( angle>=0 && angle <=90)
     {
-        for ( ; pwm <= SRVO_CONVERT_ANGLE_TO_DUTY_CYCLE(angle);
-                  pwm+= SRVO_ANGLE_STEP_PWM_DUTY_CYCLE )
+        //#define SRVO_DELAY_ms (u8) (angle/Angular_Speed);
+        for (
+            pwm = (SRVO_HOME_POS_PWM_DUTY_CYCLE);
+            pwm <= (f32) SRVO_CONVERT_ANGLE_TO_DUTY_CYCLE(angle);
+            pwm+= SRVO_ANGLE_STEP_PWM_DUTY_CYCLE 
+            )
         {
+
         #if SRVO_PIN == SRVO_PIN_PD5
-        TMR1_vASSIGN_CTCA_VALUE((pwm* TMR_ICR1));
+        TMR1_vSET_OC1A_ON_OUTPUT_COMPARE();
+        u8 temp = TMR_ICR1L;
+        TMR1_vASSIGN_CTCA_VALUE( (pwm* (temp +( TMR_ICR1H<<8) )) );
         #else
-        TMR1_vASSIGN_CTCB_VALUE((pwm* TMR_ICR1));
+        TMR1_vSET_OC1B_ON_OUTPUT_COMPARE();
+        u8 temp = TMR_ICR1L;
+        TMR1_vASSIGN_CTCB_VALUE( (pwm* (temp +( TMR_ICR1H<<8) )) );
         #endif
-            _delay_ms( SRVO_DELAY_DEG_PER_ms );
+            _delay_ms( SRVO_NORMAL_DELAY_ms );
         }
     }
    else
         if( angle>=-90 && angle <0)
         {
+          //  #define SRVO_DELAY_ms (u8) (-1*angle/Angular_Speed);
             for ( ; pwm > SRVO_CONVERT_ANGLE_TO_DUTY_CYCLE(angle);
                      pwm-= SRVO_ANGLE_STEP_PWM_DUTY_CYCLE )
             {
                 #if SRVO_PIN == SRVO_PIN_PD5
-                TMR1_vASSIGN_CTCA_VALUE((pwm* TMR_ICR1));
+                    u8 temp = TMR_ICR1L;
+                    TMR1_vASSIGN_CTCA_VALUE( (pwm* (temp +( TMR_ICR1H<<8) )) );
                 #else
-                TMR1_vASSIGN_CTCB_VALUE((pwm* TMR_ICR1));
+                    u8 temp = TMR_ICR1L;
+                    TMR1_vASSIGN_CTCB_VALUE( (pwm* (temp +( TMR_ICR1H<<8) )) );
                 #endif
-                _delay_ms( SRVO_DELAY_DEG_PER_ms );
+                _delay_ms( SRVO_NORMAL_DELAY_ms );
             }
         }
 

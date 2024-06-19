@@ -133,7 +133,7 @@ u8 TMR1_u8GET_OVF_INTERRUPT_FLAG(void);
 
 void TMR1_vCLEAR_OVF_INTERRUPT_FLAG(void);
 
-void TMR1_vSET_OVF_CALLBACK( void *(pFunction) ( void ) );
+void TMR1_vSET_OVF_CALLBACK( void (*pFunction) ( void ) );
 
 void __vector_9(void) __attribute__( ( signal ) );
 
