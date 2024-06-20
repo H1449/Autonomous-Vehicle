@@ -14,4 +14,5 @@
 
 void USS_vInit(void);
 
+u32 USS_u32GET_DISTANCE_mm(void);
 #endif

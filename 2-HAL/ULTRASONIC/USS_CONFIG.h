@@ -12,10 +12,10 @@
 
 #define USS_CONFIG_H
 
-#define USS_TRIG_PORT  GPIO_PORTC
+#define USS_TRIG_PORT  'C'
 #define USS_TRIG_PIN 7
 
-#define USS_ECHO_PORT  GPIO_PORTD
+#define USS_ECHO_PORT  'D'
 #define USS_ECHO_PIN 6
 
 #endif
