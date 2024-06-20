@@ -14,6 +14,10 @@
 
 #include"GPIO_PRIVATE.h"
 
+#include "TMR_CONFIG.h"
+#include "TMR_INTERFACE.h"
+#include "TMR_PRIVATE.h"
+
 #include "USS_CONFIG.h"
 #include "USS_PRIVATE.h"
 #include "USS_INTERFACE.h"
