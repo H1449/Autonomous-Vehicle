@@ -22,6 +22,18 @@
 #include "USS_PRIVATE.h"
 #include "USS_INTERFACE.h"
 
+
+static void uSS_vRead_Time(void)
+{
+    counter++;
+    if( GET_BIT(ECHO_PIN, USS_ECHO_PIN) == LOW )
+    {
+        GlobalInterrupt_Disable();
+        time_ms = (counter*USS_PERIOD_ms) + (TMR_TCNT2*USS_TIME_TICK_TIME_s*1000);
+        counter = 0;
+    }
+}
+
 void USS_vInit(void)
 {
 
@@ -58,26 +70,13 @@ void USS_vInit(void)
     #endif
 }
 
-static void uSS_vRead_Time(void)
-{
-    counter++;
-    if( GET_BIt(ECHO_PIN, USS_TRIG_PIN) == LOW )
-    {
-        GlobalInterrupt_Disable();
-        time_ms = (counter*USS_PERIOD_ms) + (TMR_TCNT2*USS_TIME_TICK_TIME_s*1000);
-        counter = 0;
-    }
-    
-
-}
-
 static void USS_vPULL_THE_TRIGGER(void)
 {/*Send 10us pulse to trigger measurement*/
-    CLEAR_BIT(USS_TRIG_PORT , USS_TRIG_PIN);
+    CLEAR_BIT(TRIGGER_PORT , USS_TRIG_PIN);
     _delay_us(2);
-    SET_BIT(USS_TRIG_PORT , USS_TRIG_PIN);
+    SET_BIT(TRIGGER_PORT , USS_TRIG_PIN);
     _delay_us(10);
-    CLEAR_BIT(USS_TRIG_PORT , USS_TRIG_PIN);
+    CLEAR_BIT(TRIGGER_PORT , USS_TRIG_PIN);
     _delay_us(2);
 }
 
@@ -85,7 +84,7 @@ u32 USS_u32GET_DISTANCE_mm(void)
 {
     USS_vPULL_THE_TRIGGER();
     TMR2_vENABLE_CTC_INTERRUPT();
-    while( GET_BIt(ECHO_PIN, USS_TRIG_PIN) == LOW  );
+    while( GET_BIT(ECHO_PIN, USS_ECHO_PIN) == LOW  );
     TMR2_vSet_Prescaler(TMR_PRESCALE_8);
     TMR2_vASSIGN_CTC_VALUE(USS_OCR_VALUE);
     GlobalInterrupt_Enable();
