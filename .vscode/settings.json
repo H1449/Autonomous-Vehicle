@@ -4,7 +4,9 @@
         "tmr_private.h": "c",
         "tmr_interface.h": "c",
         "std_types.h": "c",
-        "tmr_config.h": "c"
+        "tmr_config.h": "c",
+        "uss_interface.h": "c",
+        "uss_config.h": "c"
     },
-    "C_Cpp.errorSquiggles": "disabled"
+    "C_Cpp.errorSquiggles": "enabled"
 }
